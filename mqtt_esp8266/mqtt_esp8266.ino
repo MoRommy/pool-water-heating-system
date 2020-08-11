@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
+#include "string.h"
 
 /************************* WiFi Access Point *********************************/
 
@@ -22,8 +23,11 @@ Adafruit_MQTT_Publish photocell = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/fe
 
 void MQTT_connect();
 
+char message[102];
+char lastMessage[102];
+
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   delay(10);
 
   Serial.println(F("Adafruit MQTT demo"));
@@ -44,25 +48,26 @@ void setup() {
   Serial.println("IP address: "); Serial.println(WiFi.localIP());
 }
 
-uint32_t x=0;
-
 void loop() {
   
   MQTT_connect();
-  
-  Serial.print(F("\nSending photocell val "));
-  Serial.print(x);
-  Serial.print("...");
-  if (! photocell.publish(x++)) {
+
+
+  if(Serial.available()) { 
+   Serial.readBytes(message,100);
+  Serial.print(F("\nSending message to server..."));
+  if (! photocell.publish(message)) {
     Serial.println(F("Failed"));
   } else {
     Serial.println(F("OK!"));
+  }
+  Serial.println(message);
   }
 
   if(! mqtt.ping()) {
     mqtt.disconnect();
   }
-  delay(30000);
+  delay(1000);
 }
 
 void MQTT_connect() {

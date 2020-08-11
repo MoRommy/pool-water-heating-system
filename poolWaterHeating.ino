@@ -58,13 +58,10 @@ void loop() { // This is main activity
 
   void printClockErrorMessage() {
     if (RTC.chipPresent()) {
-      Serial.println("The DS1307 is stopped.  Please run the SetTime");
-      Serial.println("example to initialize the time and begin running.");
-      Serial.println();
+      customPrint("The DS1307 is stopped.  Please run the SetTime example to initialize the time and begin running.");
      } 
     else {
-      Serial.println("DS1307 read error!  Please check the circuitry.");
-      Serial.println();
+      customPrint("DS1307 read error!  Please check the circuitry.");
     }
   }
 
@@ -120,29 +117,26 @@ void loop() { // This is main activity
     return false;
   }
 
-  void print2digits(int number) {
-  if (number >= 0 && number < 10) {
-    Serial.write('0');
-  }
-  Serial.print(number);
-}
 
   void customPrint(String p) {
+    String dateAndTime;
       tmElements_t currentDateAndTime2;
       if (RTC.read(currentDateAndTime2)) {
-      Serial.print("[");
-      print2digits(currentDateAndTime2.Hour);
-      Serial.write(':');
-      print2digits(currentDateAndTime2.Minute);
-      Serial.write(':');
-      print2digits(currentDateAndTime2.Second);
-      Serial.print(" - ");
-      print2digits(currentDateAndTime2.Day);
-      Serial.write('/');
-      print2digits(currentDateAndTime2.Month);
-      Serial.write('/');
-      Serial.print(tmYearToCalendar(currentDateAndTime2.Year));
-      Serial.print("] - ");
+      dateAndTime = "[";
+      dateAndTime += currentDateAndTime2.Hour;
+      dateAndTime += ':';
+      dateAndTime += currentDateAndTime2.Minute;
+      dateAndTime += ':';
+      dateAndTime += currentDateAndTime2.Second;
+      dateAndTime += " - ";
+      dateAndTime += currentDateAndTime2.Day;
+      dateAndTime += '/';
+      dateAndTime += currentDateAndTime2.Month;
+      dateAndTime += '/';
+      dateAndTime += tmYearToCalendar(currentDateAndTime2.Year);
+      dateAndTime += "] - ";
       }
-      Serial.println(p);
+      dateAndTime += p;
+      Serial.print(dateAndTime);
+      Serial.println();
   }
