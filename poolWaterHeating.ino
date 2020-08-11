@@ -53,20 +53,12 @@ void loop() { // This is main activity
   if (RTC.read(currentDateAndTime)) {
     if (isTimeToStartDailyWork(currentDateAndTime) && didWaterCirculateInitially == false) startDailyWork();
       else if (isTimeToStopDailyWork(currentDateAndTime) && didWaterCirculateInitially == true) stopDailyWork();
-  } else printClockErrorMessage(); 
-}
-
-  void printClockErrorMessage() {
-    if (RTC.chipPresent()) {
-      Serial.println("The DS1307 is stopped.  Please run the SetTime");
-      Serial.println("example to initialize the time and begin running.");
-      Serial.println();
-     } 
-    else {
-      Serial.println("DS1307 read error!  Please check the circuitry.");
-      Serial.println();
-    }
+  } else {
+	  printClockErrorMessage(); 
+	  stopDailyWork();
   }
+  delay(1000);
+}
 
   void startDailyWork() {
     dailyCycleCounter = 0;
@@ -145,4 +137,16 @@ void loop() { // This is main activity
       Serial.print("] - ");
       }
       Serial.println(p);
+  }
+
+  void printClockErrorMessage() {
+    if (RTC.chipPresent()) {
+      Serial.println("The DS1307 is stopped.  Please run the SetTime");
+      Serial.println("example to initialize the time and begin running.");
+      Serial.println();
+     } 
+    else {
+      Serial.println("DS1307 read error!  Please check the circuitry.");
+      Serial.println();
+    }
   }
